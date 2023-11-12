@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A CRUD app</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    *{
+        font-family: 'Poppins', sans-serif;
+    }
+    body{
+        background-color: black;
+
+    }
+    
+   
+</style> 
+  </head>
+  <body>
+    <div class="container mt-5 p-5 border rounded border-secondary ">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success text-center mb-3">{{message}}</div>
+            {%endfor%}
+
+        {%endif%}
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <a href=''data-bs-toggle="modal" data-bs-target="#addStudentModal" data-bs-toggle="modal" data-bs-target="#addStudentModal"  class="btn btn-primary px-4 py-2 btn-sm">Add new student</a>
+            <div class="">
+                <form action="" method="post" class="d-flex">{% csrf_token %}
+                    <input type="search" value="{{query}}" name="searchquery" class="form-control " placeholder="search......">
+                    <button class="btn btn-success mx-2"name = 'search'>Search</button> 
+                </form>
+            </div>
+        </div>
+
+        <table class="table mt-3 table-dark border border-secondary rounded ">
+            <thead>
+              <tr>
+                <th scope="col">ID</th> 
+                <th scope="col">Student Name</th>
+                <th scope="col">Student Email</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for i in students %}
+              <tr>
+                <th scope="row">{{i.id}}</th>
+                <td>{{i.name}}</td>
+                <td>{{i.email}}</td>
+                <td><a href=""data-bs-toggle="modal" data-bs-target="#updateStudentModal_{{i.id}}" class="btn btn-success btn-sm"><i class="fa-solid fa-pen-to-square" ></i></a>
+               
+                    <a href=""data-bs-toggle="modal" data-bs-target="#deleteStudentModal_{{i.id}}"  class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a>
+                </td>
+              </tr>
+              <!-- update Student modal  -->
+              <div class="modal fade" id="updateStudentModal_{{i.id}}" tabindex="-1" aria-labelledby="updateStudentModalLabel_{{i.id}}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <form action="" method = 'post'>{%csrf_token%}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="updateStudentModalLabel_{{i.id}}">Update Student</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden"name = 'id' value="{{i.id}}">
+                            <div>
+                                <label for="name">Student Name</label>
+                                <input type="text" name = 'name' class="form-control" id="name" value="{{i.name}}" required>
+                            </div>
+                            <br>
+                            <div>
+                                <label for="email">Enter Email</label>
+                                <input type="email" name = 'email' class="form-control" id="email" value="{{i.email}}" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary" name="update">Update</button>
+                        </div>
+                      </div>
+                  </form>
+                </div>
+              </div>
+
+
+                            <!-- delete Modal -->
+                <div class="modal fade" id="deleteStudentModal_{{i.id}}" tabindex="-1" aria-labelledby="deleteStudentModalLabel_{{i.id}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <form action="" method = 'post'>{%csrf_token%}
+                        <input type="hidden"name='id'value ="{{i.id}}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="deleteStudentModalLabel_{{i.id}}">Delete Student</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                               <p>Are you sure?</p>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="delete">Confirm </button>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+
+                {%endfor%}
+              
+            </tbody>
+          </table>
+
+    </div>
+
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form action="" method = 'post'>{%csrf_token%}
+        <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="addStudentModalLabel">Add New Student</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label for="name">Student Name</label>
+                    <input type="text" name = 'name' class="form-control" id="name" required>
+                </div>
+                <br>
+                <div>
+                    <label for="email">Enter Email</label>
+                    <input type="email" name = 'email' class="form-control" id="email" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" name="add">Add Student</button>
+            </div>
+          </div>
+      </form>
+    </div>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>
